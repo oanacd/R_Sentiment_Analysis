@@ -2,7 +2,7 @@
 Sentiment analysis in R on the Donald Trump's tweets.
 
 ## Number of tweets per year and median of retweets
-<img src=img/number_tweets_retweets.JPG>
+<img src=img/number_tweets_retweets.JPG width = '80%'>
 
 Code: 
 ```javascript
@@ -20,7 +20,7 @@ Code:
 ```
 
 ## Proportion of negative and positive tweets before and during presidency
-<img src=img/sentiment_proportion.JPG>
+<img src=img/sentiment_proportion.JPG width = '80%'>
 
 Code: 
 ```javascript
@@ -33,7 +33,7 @@ ggplot(df3ans, aes(x=2, y = id_str, fill=sentiment)) +
        fill = "Sentiment")
 ```
 ## Perceptual map for 5 analysed entities
-<img src=img/positioning_map.JPG>
+<img src=img/positioning_map.JPG width = '80%'>
 
 Code: 
 ```javascript
@@ -59,7 +59,7 @@ ggplot(percept, aes(x=id_str, y=score)) +
 ```
 
 ## Distribution of favorite tweets 
-<img src=img/favorite_tweets.JPG>
+<img src=img/favorite_tweets.JPG width = '80%'>
 
 Code: 
 ```javascript
@@ -77,7 +77,7 @@ ggplot(q3df2017_2019,
 ```
 
 ## Number of tweets per weekday 
-<img src=img/weekdays.JPG>
+<img src=img/weekdays.JPG width = '80%'>
 
 Code: 
 ```javascript
