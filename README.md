@@ -94,3 +94,98 @@ ggplot(jsem_2017_2019[jsem_2017_2019$entites_q3 != "Putin",], aes(x=factor(jours
        y = "Nombre de tweets",
        fill = "Entités")
 ```
+## Text analysis to select only 5 entities from all tweets
+```javascript
+
+#####################
+#####################
+#EXTRACT Barack Obama
+
+#Obama pattern. Criteria must be without spaces#
+Obama<- grep(pattern = "Barack|Obama|barack|obama", x = tweets$entity_name, value = TRUE)
+Obama
+
+#To exclude. Associated with, but not Barack Obama. 
+not_BO <- grep(pattern = "Michelle", x = tweets$entity_name, value = TRUE)
+not_BO
+
+#Vector with rows that contain Barack Obama = 2477 rows
+tweets_Obama_only<-tweets$entity_name[tweets$entity_name %in% Obama &
+                                        !(tweets$entity_name %in% not_BO)]
+
+########################
+#EXTRACT Hillary Clinton
+
+#Hillary pattern
+Hillary<- grep(pattern = "Hillary|hillary|Clinton|clinton", x = tweets$entity_name, value = TRUE)
+Hillary
+
+#To exclude. Associated with, but not Hillary Clinton.
+not_HC <- grep(pattern = "Bill|bill|Chelsea|chelsea", x = tweets$entity_name, value = TRUE)
+not_HC
+
+#Vector with rows that contain Hillary Clinton = 1211
+tweets_Hillary_only<-tweets$entity_name[tweets$entity_name %in% Hillary &
+                                          !(tweets$entity_name %in% not_HC)]
+
+####################
+#EXTRACT Vladimir Putin
+Putin <- grep(pattern = "Vladimir|vladimir|Putin|putin", x = tweets$entity_name, value = TRUE)
+
+#VIEW rows that contain Vladimir Putin = 101
+tweets_Putin_only<-tweets$entity_name[tweets$entity_name %in% Putin]
+
+
+####################
+#EXTRCT Russia
+
+Russia<- grep(pattern = "Russia", x = tweets$entity_name, value = TRUE)
+
+#VIEW rows that contain Russia = 567
+tweets_Russia_only<- tweets$entity_name[tweets$entity_name %in% Russia &
+                                          !(tweets$entity_name %in% Putin)]
+
+#####################
+#EXTRACT Donald Trump 
+
+#Donald Trump pattern. ALL rows
+Donald<- grep(pattern = "Donald|Trump|donald|trump", x = tweets$entity_name, value = TRUE)
+Donald
+
+#To exclude. Associated with, but not Donald Trump#
+not_DT <- grep(pattern = "Melania|melania|ivanka|Ivanka|John|john|Eric|erictrump|fred|Fred|McDonald's|McDonalds|mcdonalds|mcdonald's", x = tweets$entity_name, value = TRUE)
+not_DT
+
+#VIEW rows that contain Donald Trump = 6594 rows
+tweets_D_only<-tweets$entity_name[tweets$entity_name %in% Donald &
+                                    !(tweets$entity_name %in% not_DT) &
+                                    !(tweets$entity_name %in% Hillary) &
+                                    !(tweets$entity_name %in% Obama) & 
+                                    !(tweets$entity_name %in% Putin) & 
+                                    !(tweets$entity_name %in% Russia)]
+
+################ 
+## NEW column in DB ##
+
+tweets$Q3[tweets$entity_name %in% tweets_Russia_only] <- "Russia"
+tweets$Q3[tweets$entity_name %in% tweets_Putin_only] <- "Vladimir Putin"
+tweets$Q3[tweets$entity_name %in% tweets_Hillary_only] <- "Hillary Clinton"
+tweets$Q3[tweets$entity_name %in% tweets_Obama_only] <- "Barack Obama"
+tweets$Q3[tweets$entity_name %in% tweets_D_only] <- "Donald Trump"
+
+###################
+#NEW data frame. NA excluded from Q3 # 
+
+tweets_Q3<- tweets[!is.na(tweets$Q3),]
+            
+## AGGREGATE ###
+aggregate(tweets_Q3$id_str ~ tweets_Q3$Q3, FUN = "length")
+
+aggregate(tweets_Q3$id_str ~ tweets_Q3$Q3, FUN = "count.unique")
+
+
+##################
+
+tweets_Q3$period<- with(tweets_Q3, ifelse(year < 2017, "avant president", "president"))
+presidentdf<- tweets_Q3[tweets_Q3$period == "president",]
+```
